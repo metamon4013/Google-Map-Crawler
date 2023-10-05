@@ -6,8 +6,8 @@
 
 <script setup lang="ts">
 import { Loader } from '@googlemaps/js-api-loader';
-import { Title } from 'nuxt/dist/head/runtime/components';
-import tokyo from '~/assets/tokyo.json'
+import nihon from '~/assets/tokyo.json'
+import america from '~/assets/america.json'
 const runTimeConfig = useRuntimeConfig();
 
 const loader = new Loader({
@@ -21,10 +21,10 @@ onMounted(() => {
     .importLibrary('maps')
     .then(({Map}) => {
       const element = document.getElementById("map") as HTMLElement
-      const Tokyo: google.maps.LatLngLiteral = {lat: 35.681, lng: 139.767}
+      const Center: google.maps.LatLngLiteral = {lat: 38.898, lng: -77.0365}
       const map = new Map(element, {
         zoom: 10,
-        center: Tokyo,
+        center: Center,
         mapId: 'DEMO_MAP_ID',
       });
 
@@ -32,9 +32,9 @@ onMounted(() => {
         .importLibrary('places')
         .then(({PlacesService}) => {
           const placesSearvice = new PlacesService(map)
-          tokyo.tokyo_cities.forEach((city) => {
+          america.forEach((city) => {
             placesSearvice.textSearch({
-              query: `${city}にあるホットヨガスタジオLAVA`
+              query: `${city}にあるPure Barre`
             }, (result, serviceStatus, pagination) => {
               console.log(pagination?.hasNextPage)
               console.log(result)
@@ -47,7 +47,9 @@ onMounted(() => {
                       position: store.geometry?.location,
                       title: store.name
                     })
-                    marker.setMap
+                    if (store.name?.includes("Pure")) {
+                      marker.setMap(map)
+                    }
                   })
                 })
               if (pagination?.hasNextPage) {
